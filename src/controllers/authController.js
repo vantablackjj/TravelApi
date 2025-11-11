@@ -19,7 +19,7 @@ export const signUp = async (req, res) => {
     if (isDuplicate)
       return res.status(409).json({ message: "Username already exists" });
 
-    // ✅ Correct hashing
+    //  Correct hashing
     const hashPassword = await bcrypt.hash(password, 10);
 
     await User.create({
@@ -44,7 +44,7 @@ export const signIn = async (req, res) => {
     const user = await User.findOne({ $or: [{ username }, { email }] });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // ✅ Use correct field name here
+    //  Use correct field name here
     const isPasswordCorrect = await bcrypt.compare(password, user.hashPassword);
     if (!isPasswordCorrect)
       return res.status(401).json({ message: "Incorrect password or username" });
@@ -78,3 +78,27 @@ export const signIn = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+export const signOut = async(req,res)=>{
+  try{
+
+      // Retrieving refresh token from cookie
+
+        const token = req.cookies?.refreshToken
+
+        if(token){
+          // Removing refresh token in Session 
+
+          await Session.deleteOne({refreshToken:token})
+        }
+
+
+      // Removing cookie
+
+        res.clearCookie("refreshToken")
+
+        return res.sendStatus(204)
+  }catch(error){
+    res.status(500).json({message:error.message})
+  }
+}

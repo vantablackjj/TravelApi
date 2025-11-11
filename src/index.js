@@ -21,8 +21,8 @@ app.use(cookieParser())
 app.use('/api/auth',authRoute)
 
 //private routes
-app.use(protectRoute)
-app.use('/api/users',userRoute)
+
+app.use('/api/users',protectRoute, userRoute)
 // Connect to database  
 
 connectDB().then(()=>{
