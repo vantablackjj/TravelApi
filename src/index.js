@@ -6,6 +6,7 @@ import authRoute from  "./routes/authRoute.js"
 import cookieParser from 'cookie-parser';
 import userRoute from './routes/userRoute.js'
 import { protectRoute } from './middlewares/authMiddleware.js';
+import locationRouter from './routes/locationRoute.js'
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(cookieParser())
 
 // public routes
 app.use('/api/auth',authRoute)
+app.use('/api',locationRouter)
 
 //private routes
 

@@ -102,3 +102,40 @@ export const signOut = async(req,res)=>{
     res.status(500).json({message:error.message})
   }
 }
+
+export const refreshAccessToken = async(req,res)=>{
+  try{
+    const refreshToken= req.cookies?.refreshToken;
+
+    if(!refreshToken){
+      return res.status(401).json({message:"Missing refresh token" })
+    }
+
+    //Verify refresh token exits in DB 
+
+    const session = await Session.findOne({refreshToken})
+    if(!session){
+      return res.staus(401).json({message:'expired'})
+    }
+
+    // Verify refresh token is expired 
+
+  if(session.expiresAt<Date.now()){
+    await Session.deleteOne({refreshToken})
+    return res.status(403).json({message:"Refresh expried"})
+  }    
+
+  //new access token 
+
+  const newAccesToken = jwt.sign(
+    {userId:session.userId},
+    process.env.ACCESS_TOKEN_SECRET,
+    {expriedIn:"30m"}
+  )
+
+  return res.status(200).json({accessToken : newAccesToken})
+
+  }catch(error){
+    res.status(500).json({message:error.message})
+  }
+}
