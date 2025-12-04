@@ -21,7 +21,7 @@ app.use(cors({
 }));
 
 // if needed:
-app.options('*', cors());
+
 
 //middleware
 
