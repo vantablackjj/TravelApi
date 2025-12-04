@@ -1,5 +1,6 @@
 import express from 'express';
 
+import cors from 'cors'
 import dotenv from 'dotenv';
 import { connectDB } from './libs/db.js';
 import authRoute from  "./routes/authRoute.js"
@@ -12,6 +13,16 @@ dotenv.config();
 
 const app = express()
 const PORT = process.env.PORT||3001
+
+// CORS middleware
+app.use(cors({
+    origin: "http://localhost:5173", // update based on your frontend
+    credentials: true
+}));
+
+// if needed:
+app.options('*', cors());
+
 //middleware
 
 app.use(express.json())
